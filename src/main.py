@@ -16,6 +16,7 @@ config_ini.read("config.ini")
 @click.option("--manifest", required=True)
 @click.option("--lang", default=config_ini.get("main", "LANG"))
 @click.option("--creator", default=config_ini.get("main", "CREATOR"))
+@click.version_option(version=config_ini.get("main", "VERSION"))
 def init(name, manifest, lang, creator):
     ctx.name = name
     ctx.manifest = manifest
