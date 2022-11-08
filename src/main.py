@@ -1,36 +1,32 @@
 import click
-
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-
-
-def greeter(**kwargs):
-    output = '{0}, {1}!'.format(kwargs['greeting'],
-                                kwargs['name'])
-    if kwargs['caps']:
-        output = output.upper()
-    print(output)
+from configparser import ConfigParser
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version='1.0.0')
-def greet():
+class Context:
     pass
 
 
-@greet.command()
-@click.argument('name')
-@click.option('--greeting', default='Hello', help='word to use for the greeting')
-@click.option('--caps', is_flag=True, help='uppercase the output')
-def hello(**kwargs):
-    greeter(**kwargs)
+ctx = Context()
+config_ini = ConfigParser()
+config_ini.read("config.ini")
 
 
-@greet.command()
-@click.argument('name')
-@click.option('--greeting', default='Goodbye', help='word to use for the greeting')
-@click.option('--caps', is_flag=True, help='uppercase the output')
-def goodbye(**kwargs):
-    greeter(**kwargs)
+@click.command()
+@click.option("--name", required=True)
+@click.option("--manifest", required=True)
+@click.option("--lang", default=config_ini.get("main", "LANG"))
+@click.option("--creator", default=config_ini.get("main", "CREATOR"))
+def init(name, manifest, lang, creator):
+    ctx.name = name
+    ctx.manifest = manifest
+    ctx.lang = lang
+    ctx.creator = creator
 
-if __name__ == '__main__':
-    greet()
+
+def run():
+    pass
+
+
+if __name__ == "__main__":
+    init()
+    run()
