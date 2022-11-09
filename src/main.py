@@ -1,15 +1,13 @@
 import click
 from configparser import ConfigParser
-
+from manifest import Manifest
 
 class Context:
     pass
 
-
 ctx = Context()
 config_ini = ConfigParser()
 config_ini.read("config.ini")
-
 
 @click.command()
 @click.option("--name", required=True)
@@ -17,17 +15,16 @@ config_ini.read("config.ini")
 @click.option("--lang", default=config_ini.get("main", "LANG"))
 @click.option("--creator", default=config_ini.get("main", "CREATOR"))
 @click.version_option(version=config_ini.get("main", "VERSION"))
-def init(name, manifest, lang, creator):
+def run(name, manifest, lang, creator):
     ctx.name = name
     ctx.manifest = manifest
     ctx.lang = lang
     ctx.creator = creator
-
-
-def run():
-    pass
+    # stage 1
+    manifest = Manifest(ctx)
+    manifest.get()
 
 
 if __name__ == "__main__":
-    init()
     run()
+    
