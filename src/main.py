@@ -2,12 +2,15 @@ import click
 from configparser import ConfigParser
 from manifest import Manifest
 
+
 class Context:
     pass
+
 
 ctx = Context()
 config_ini = ConfigParser()
 config_ini.read("config.ini")
+
 
 @click.command()
 @click.option("--name", required=True)
@@ -21,10 +24,11 @@ def run(name, manifest, lang, creator):
     ctx.lang = lang
     ctx.creator = creator
     # stage 1
-    manifest = Manifest(ctx)
-    manifest.get()
+    m = Manifest(ctx)
+    json = m.get_json()
+    images = m.get_links(json)
+    print(images)
 
 
 if __name__ == "__main__":
     run()
-    
