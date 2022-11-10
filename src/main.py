@@ -20,7 +20,8 @@ config_ini.read("config.ini")
 @click.version_option(version=config_ini.get("main", "VERSION"))
 def run(name, manifest, lang, creator):
     ctx.name = name
-    ctx.manifest = manifest
+    ctx.manifest_link = manifest
+    ctx.manifest_content = None
     ctx.lang = lang
     ctx.creator = creator
     # stage 1

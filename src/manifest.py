@@ -4,19 +4,19 @@ from jsonpath_ng import jsonpath, parse
 
 class Manifest:
     def __init__(self, ctx):
-        self.manifest = ctx.manifest
+        self.manifest_link = ctx.manifest_link
+        self.manifest_content = ctx.manifest_content
 
     def get_json(self):
         try:
-            response = requests.get(self.manifest)
+            response = requests.get(self.manifest_link)
         except Exception as e:
             print(e)
             return None
         else:
             if response.status_code == 200:
-                json = response.json()
-                print("ok")
-                return json
+                self.manifest_content = response.json()
+                return self.manifest_content
             else:
                 print(f"Got status code {response.status_code}")
                 return None
