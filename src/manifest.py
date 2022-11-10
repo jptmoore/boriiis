@@ -5,9 +5,8 @@ from jsonpath_ng import jsonpath, parse
 class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
-        self.manifest_content = ctx.manifest_content
 
-    def get_json(self):
+    def get_content(self):
         try:
             response = requests.get(self.manifest_link)
         except Exception as e:
@@ -15,8 +14,8 @@ class Manifest:
             return None
         else:
             if response.status_code == 200:
-                self.manifest_content = response.json()
-                return self.manifest_content
+                content = response.json()
+                return content
             else:
                 print(f"Got status code {response.status_code}")
                 return None

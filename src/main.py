@@ -1,7 +1,8 @@
 import click
+import emoji
 from configparser import ConfigParser
 from manifest import Manifest
-
+from ocr import Ocr
 
 class Context:
     pass
@@ -21,15 +22,20 @@ config_ini.read("config.ini")
 def run(name, manifest, lang, creator):
     ctx.name = name
     ctx.manifest_link = manifest
-    ctx.manifest_content = None
     ctx.lang = lang
     ctx.creator = creator
     # stage 1
-    m = Manifest(ctx)
-    json = m.get_json()
-    images = m.get_links(json)
-    print(images)
-
+    print(emoji.emojize(':bear: starting stage 1 of pipeline'))
+    print(emoji.emojize(':bear: parsing manifest for image links'))
+    manifest = Manifest(ctx)
+    manifest_content = manifest.get_content()
+    manifest_links = manifest.get_links(manifest_content)
+    # stage 2
+    print(emoji.emojize(':bear: starting stage 2 of pipeline'))
+    ocr = Ocr(ctx)
+    for link in manifest_links:
+        ocr_content = ocr.get_content(link)
+        print(emoji.emojize(':bear:'), ocr_content)
 
 if __name__ == "__main__":
     run()
