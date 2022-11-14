@@ -3,6 +3,7 @@ import emoji
 from configparser import ConfigParser
 from manifest import Manifest
 from ocr import Ocr
+from annotation import Annotation
 
 class Context:
     pass
@@ -30,18 +31,17 @@ def run(name, manifest, lang, creator, oem, psm):
     ctx.psm = psm
 
     # stage 1
-    print(emoji.emojize(':bear: starting stage 1 of pipeline'))
-    print(emoji.emojize(':bear: parsing manifest for image links'))
     manifest = Manifest(ctx)
     manifest_content = manifest.get_content()
     manifest_links = manifest.get_links(manifest_content)
     # stage 2
-    print(emoji.emojize(':bear: starting stage 2 of pipeline'))
     ocr = Ocr(ctx)
+    annotation = Annotation(ctx)
     for link in manifest_links:
         ocr_content = ocr.get_content(link)
-        print(emoji.emojize(':bear:'), ocr_content)
+        response = annotation.add(ocr_content)
         break
+    # final stage will be create git patch
 
 if __name__ == "__main__":
     run()
