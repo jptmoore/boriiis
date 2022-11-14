@@ -6,8 +6,7 @@ from io import BytesIO
 
 class Ocr:
     def __init__(self, ctx):
-        self.config = r"--oem 3 --psm 6"
-
+        self.config = f"--oem {ctx.oem} --psm {ctx.psm} -l {ctx.lang}"
     def get_image(self, link):
         try:
             response = requests.get(link)
