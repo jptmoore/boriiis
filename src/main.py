@@ -31,6 +31,7 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.oem = oem
     ctx.psm = psm
     ctx.preview = preview
+    ctx.version = config_ini.get("main", "VERSION")
 
     # stage 1
     manifest = Manifest(ctx)

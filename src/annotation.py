@@ -1,10 +1,13 @@
 import xmltodict
 from jsonpath_ng import jsonpath, parse
 
+from miiify import Miiify
+
 class Annotation:
     def __init__(self, ctx):
         self.name = ctx.name
         self.preview = ctx.preview
+        self.miiify = Miiify(ctx)
        
 
     def __create_annotation__(self, box, content):
