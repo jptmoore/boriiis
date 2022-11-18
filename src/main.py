@@ -37,12 +37,14 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     manifest = Manifest(ctx)
     manifest_content = manifest.get_content()
     manifest_links = manifest.get_links(manifest_content)
+    manifest_targets = manifest.get_targets(manifest_content)
+    manifest_zip = zip(manifest_links, manifest_targets)
     # stage 2
     ocr = Ocr(ctx)
     annotation = Annotation(ctx)
-    for link in manifest_links:
+    for (link, target) in manifest_zip:
         ocr_content = ocr.get_content(link)
-        response = annotation.add(ocr_content)
+        response = annotation.add(ocr_content, target)
         break
     # final stage will be create git patch
 

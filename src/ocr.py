@@ -22,8 +22,6 @@ class Ocr:
                 return None
 
     def get_content(self, link):
-        # override for now
-        link = "https://miiifystore.s3.eu-west-2.amazonaws.com/images/test.png"
         image = self.get_image(link)
         content = pytesseract.image_to_alto_xml(Image.open(image), config=self.config)
         return content

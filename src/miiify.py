@@ -37,6 +37,6 @@ class Miiify:
         return dict 
 
 
-    def create_annotation(self, box, content):
-        payload = self.__annotation_payload__(self.creator, content, "foo")
+    def create_annotation(self, box, content, target):
+        payload = self.__annotation_payload__(self.creator, content, target)
         return payload

@@ -1,0 +1,40 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "https://miiifystore.s3.eu-west-2.amazonaws.com/iiif/ocr.json",
+  "type": "Manifest",
+  "label": {
+    "en": ["Boriiis example"]
+  },
+  "behavior": ["non-paged"],
+  "items": [
+    {
+      "id": "https://miiify.rocks/iiif/cats/canvas/p1",
+      "type": "Canvas",
+      "label": {
+        "en": ["Default tesseract example"]
+      },
+      "height": 4613,
+      "width": 3204,
+      "items": [
+        {
+          "id": "https://miiify.rocks/iiif/cats/page/p1/1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "https://miiify.rocks/iiif/cats/annotation/p0001-image",
+              "type": "Annotation",
+              "motivation": "painting",
+              "body": {
+                "id": "https://miiifystore.s3.eu-west-2.amazonaws.com/images/test.png",
+                "type": "Image",
+                "format": "image/png"
+              },
+              "target": "https://miiify.rocks/iiif/cats/canvas/p1"
+            }
+          ]
+        }
+      ],
+      "annotations": []
+    }
+  ]
+}

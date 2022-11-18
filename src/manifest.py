@@ -29,3 +29,13 @@ class Manifest:
             return None
         else:
             return lis
+
+    def get_targets(self, json):
+        try:
+            jsonpath_expression = parse('items[*].items[*].items[*].target')
+            lis = [match.value for match in jsonpath_expression.find(json)]
+        except Exception as e:
+            print(e)
+            return None
+        else:
+            return lis
