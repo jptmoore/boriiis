@@ -3,6 +3,8 @@ from jsonpath_ng import jsonpath, parse
 
 from miiify import Miiify
 
+import json
+
 class Annotation:
     def __init__(self, ctx):
         self.name = ctx.name
@@ -15,7 +17,8 @@ class Annotation:
             print(content)
         else:
             annotation = self.miiify.create_annotation(box, content, target)
-            print(annotation)
+            json_object = json.dumps(annotation, indent = 2)
+            print(json_object)
 
     
     def __parse_string__(self, tb):
@@ -27,7 +30,7 @@ class Annotation:
 
     def __parse_textblock_worker__(self, content, target):
         for tb in content:
-            box = ( tb['@HPOS'], tb['@VPOS'], tb['@WIDTH'], tb['@HEIGHT'] )
+            box = f"{tb['@HPOS']},{tb['@VPOS']},{tb['@WIDTH']},{tb['@HEIGHT']}"
             content = self.__parse_string__(tb)
             self.__annotate__(box, content, target)
 

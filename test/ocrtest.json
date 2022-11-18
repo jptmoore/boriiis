@@ -1,6 +1,6 @@
 {
   "@context": "http://iiif.io/api/presentation/3/context.json",
-  "id": "https://miiifystore.s3.eu-west-2.amazonaws.com/iiif/ocr.json",
+  "id": "https://miiifystore.s3.eu-west-2.amazonaws.com/iiif/ocrtest.json",
   "type": "Manifest",
   "label": {
     "en": ["Boriiis example"]
@@ -8,20 +8,20 @@
   "behavior": ["non-paged"],
   "items": [
     {
-      "id": "https://miiify.rocks/iiif/cats/canvas/p1",
+      "id": "https://miiify.rocks/iiif/ocr/canvas/p1",
       "type": "Canvas",
       "label": {
         "en": ["Default tesseract example"]
       },
-      "height": 4613,
-      "width": 3204,
+      "width": 640,
+      "height": 480,
       "items": [
         {
-          "id": "https://miiify.rocks/iiif/cats/page/p1/1",
+          "id": "https://miiify.rocks/iiif/ocr/page/p1/1",
           "type": "AnnotationPage",
           "items": [
             {
-              "id": "https://miiify.rocks/iiif/cats/annotation/p0001-image",
+              "id": "https://miiify.rocks/iiif/ocr/annotation/p0001-image",
               "type": "Annotation",
               "motivation": "painting",
               "body": {
@@ -29,12 +29,59 @@
                 "type": "Image",
                 "format": "image/png"
               },
-              "target": "https://miiify.rocks/iiif/cats/canvas/p1"
+              "target": "https://miiify.rocks/iiif/ocr/canvas/p1"
             }
           ]
         }
       ],
-      "annotations": []
+      "annotations": [
+        {
+          "id": "https://miiify.rocks/iiif/ocr/page/p1/annopage-1",
+          "type": "AnnotationPage",
+          "items": [
+            {
+              "id": "http://example.org/anno1",
+              "@context": "http://www.w3.org/ns/anno.jsonld",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "value": "This is a lot of 12 point text to test the ocr code and see if it works on all types of file format.",
+                "format": "text/plain"
+              },
+              "selector": {
+                "type": "FragmentSelector",
+                "conformsTo": "http://www.w3.org/TR/media-frags/",
+                "value": "xywh=36,92,582,92"
+              },
+              "target": "https://miiify.rocks/iiif/ocr/canvas/p1#xywh=36,92,582,92",
+              "creator": {
+                "name": "john"
+              }
+            },
+            {
+              "id": "http://example.org/anno2",
+              "@context": "http://www.w3.org/ns/anno.jsonld",
+              "type": "Annotation",
+              "motivation": "commenting",
+              "body": {
+                "type": "TextualBody",
+                "value": "The quick brown dog jumped over the lazy fox. The quick brown dog jumped over the lazy fox. The quick brown dog jumped over the lazy fox. The quick brown dog jumped over the lazy fox.",
+                "format": "text/plain"
+              },
+              "selector": {
+                "type": "FragmentSelector",
+                "conformsTo": "http://www.w3.org/TR/media-frags/",
+                "value": "xywh=36,194,561,167"
+              },
+              "target": "https://miiify.rocks/iiif/ocr/canvas/p1#xywh=36,194,561,167",
+              "creator": {
+                "name": "john"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
