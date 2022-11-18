@@ -10,14 +10,11 @@ class Annotation:
         self.miiify = Miiify(ctx)
        
 
-    def __create_annotation__(self, box, content):
-        pass
-
     def __annotate__(self, box, content):
         if self.preview:
             print(content)
         else:
-            annotation = self.__create_annotation__(box, content)
+            annotation = self.miiify.create_annotation(box, content)
             print(annotation)
 
     

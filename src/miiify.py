@@ -5,14 +5,14 @@ class Miiify:
         self.creator = ctx.creator
         self.version = ctx.version
 
-    def __annotation_payload__(self, author, body, target):
+    def __annotation_payload__(self, creator, body, target):
         dict = {
             "@context": "http://www.w3.org/ns/anno.jsonld",
             "type": "Annotation",
             "motivation": "commenting",
             "body": {"type": "TextualBody", "value": body, "format": "text/plain"},
             "target": target,
-            "creator": {"name": author}
+            "creator": {"name": creator}
         }
         return dict
 
@@ -35,3 +35,8 @@ class Miiify:
         dict = self.__basic_headers()
         dict['Slug'] = slug
         return dict 
+
+
+    def create_annotation(self, box, content):
+        payload = self.__annotation_payload__(self.creator, content, "foo")
+        return payload
