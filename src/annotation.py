@@ -16,9 +16,8 @@ class Annotation:
         if self.preview:
             print(content)
         else:
-            annotation = self.miiify.create_annotation(slug, box, content, target)
-            json_object = json.dumps(annotation, indent = 2)
-            print(json_object)
+            response = self.miiify.create_annotation(slug, box, content, target)
+            print(response)
 
     
     def __parse_string__(self, tb):

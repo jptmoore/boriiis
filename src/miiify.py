@@ -1,3 +1,5 @@
+import requests
+
 class Miiify:
     def __init__(self, ctx):
         self.name = ctx.name
@@ -41,7 +43,8 @@ class Miiify:
         return dict
 
     def create_annotation(self, slug, box, content, target):
-        # need image name and textblock name
+        url = f"https://localhost/annotations/{self.name}/"
         headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
-        return headers
+        response = requests.post(url, json=payload, verify=False, headers=headers)
+        return response
