@@ -27,41 +27,22 @@ class Annotation:
         content = ' '.join(strings)
         return content
 
-
-    def __get_image_name__(self, link):
-        try:
-            image_name = link.split('/')[-1]
-        except Exception as e:
-            print("Malformed link")
-            return None
-        else:
-            name = image_name.split('.')
-            match name:
-                case []:
-                    print('Unable to get name of image from link')
-                    return None
-                case [x]:
-                    return x
-                case [x, *xs]:
-                    return x
-
-    def __parse_textblock_worker__(self, content, target, link):
-        image_name = self.__get_image_name__(link)
+    def __parse_textblock_worker__(self, content, target, index):
         for tb in content:
-            slug = f"{image_name}_{tb['@ID']}"
+            slug = f"image_{index}_{tb['@ID']}"
             box = f"{tb['@HPOS']},{tb['@VPOS']},{tb['@WIDTH']},{tb['@HEIGHT']}"
             content = self.__parse_string__(tb)
             self.__annotate__(slug, box, content, target)
 
-    def __parse_textblock__(self, dict, target, link):
+    def __parse_textblock__(self, dict, target, index):
         jsonpath_expression = parse('alto.Layout.Page.PrintSpace.ComposedBlock[*].TextBlock[*]')
         content = [match.value for match in jsonpath_expression.find(dict)]
-        self.__parse_textblock_worker__(content, target, link)
+        self.__parse_textblock_worker__(content, target, index)
 
 
-    def add(self, xml, target, link):
+    def add(self, xml, target, index):
         dict = xmltodict.parse(xml)
-        self.__parse_textblock__(dict, target, link)
+        self.__parse_textblock__(dict, target, index)
         
 
 

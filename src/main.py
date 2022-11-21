@@ -42,10 +42,9 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     # stage 2
     ocr = Ocr(ctx)
     annotation = Annotation(ctx)
-    for (link, target) in manifest_zip:
+    for index, (link, target) in enumerate(manifest_zip):
         ocr_content = ocr.get_content(link)
-        response = annotation.add(ocr_content, target, link)
-        break
+        response = annotation.add(ocr_content, target, index)
     # final stage will be create git patch
 
 if __name__ == "__main__":
