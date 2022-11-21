@@ -1,6 +1,6 @@
 class Miiify:
     def __init__(self, ctx):
-        self.container = ctx.name
+        self.name = ctx.name
         self.creator = ctx.creator
         self.version = ctx.version
 
@@ -36,10 +36,12 @@ class Miiify:
         return dict
 
     def __slug_headers__(self, slug):
-        dict = self.__basic_headers()
+        dict = self.__basic_headers__()
         dict["Slug"] = slug
         return dict
 
-    def create_annotation(self, box, content, target):
+    def create_annotation(self, slug, box, content, target):
+        # need image name and textblock name
+        headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
-        return payload
+        return headers
