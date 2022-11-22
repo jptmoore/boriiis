@@ -43,7 +43,7 @@ class Miiify:
         return dict
 
     def create_annotation(self, slug, box, content, target):
-        url = f"https://localhost/annotations/{self.name}/"
+        url = f"https://localhost:8080/annotations/{self.name}/"
         headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
         response = requests.post(url, json=payload, verify=False, headers=headers)
