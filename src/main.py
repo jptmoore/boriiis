@@ -4,6 +4,7 @@ from configparser import ConfigParser
 from manifest import Manifest
 from ocr import Ocr
 from annotation import Annotation
+from patch import Patch
 
 class Context:
     pass
@@ -45,7 +46,9 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     for index, (link, target) in enumerate(manifest_zip):
         ocr_content = ocr.get_content(link)
         response = annotation.add(ocr_content, target, index)
-    # final stage will be create git patch
+    patch = Patch(ctx)
+    diff = patch.diff(ctx)
+    print(diff)
 
 if __name__ == "__main__":
     run()

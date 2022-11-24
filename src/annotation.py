@@ -17,7 +17,7 @@ class Annotation:
             print(content)
         else:
             response = self.miiify.create_annotation(slug, box, content, target)
-            print(response)
+            return response
 
     
     def __parse_string__(self, tb):
