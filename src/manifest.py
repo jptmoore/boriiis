@@ -5,6 +5,8 @@ from jsonpath_ng import jsonpath, parse
 class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
+        self.name = ctx.name
+        self.server = ctx.server
 
     def get_content(self):
         try:
@@ -22,7 +24,7 @@ class Manifest:
 
     def get_links(self, json):
         try:
-            jsonpath_expression = parse('items[*].items[*].items[*].body.id')
+            jsonpath_expression = parse("items[*].items[*].items[*].body.id")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
             print(e)
@@ -32,10 +34,18 @@ class Manifest:
 
     def get_targets(self, json):
         try:
-            jsonpath_expression = parse('items[*].items[*].items[*].target')
+            jsonpath_expression = parse("items[*].items[*].items[*].target")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
             print(e)
             return None
         else:
             return lis
+
+    def __annotation_page__(self, id):
+        dict = {"id": id, "type": "AnnotationPage"}
+        return dict
+
+    def get_annotation_page(self, target):
+        id = f"{self.server}/annotations/{self.name}?target={target}"
+        return self.__annotation_page__(id)

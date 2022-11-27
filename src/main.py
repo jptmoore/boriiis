@@ -33,6 +33,8 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.psm = psm
     ctx.preview = preview
     ctx.version = config_ini.get("main", "VERSION")
+    ctx.server = config_ini.get("miiify", "SERVER")
+    ctx.local_repo = config_ini.get("miiify", "LOCAL_REPO")
 
     # stage 1
     manifest = Manifest(ctx)
@@ -43,12 +45,16 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     # stage 2
     ocr = Ocr(ctx)
     annotation = Annotation(ctx)
+    annotation_pages = []
     for index, (link, target) in enumerate(manifest_zip):
+        annotation_page = manifest.get_annotation_page(target)
+        annotation_pages.append(annotation_page)
         ocr_content = ocr.get_content(link)
         response = annotation.add(ocr_content, target, index)
-    patch = Patch(ctx)
-    diff = patch.diff(ctx)
-    print(diff)
+    print(annotation_pages)
+    #patch = Patch(ctx)
+    #diff = patch.diff(ctx)
+    #print(diff)
 
 if __name__ == "__main__":
     run()

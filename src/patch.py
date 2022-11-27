@@ -2,8 +2,8 @@ from git import Repo
 
 class Patch:
     def __init__(self, ctx):
-        self.repo = Repo("/home/john/git/miiify/db")
+        self.local_repo = Repo(ctx.local_repo)
 
     def diff(self, ctx):
-        content = self.repo.git.diff("origin/master", "master")
+        content = self.local_repo.git.diff("origin/master", "master")
         return content
