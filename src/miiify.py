@@ -1,5 +1,7 @@
 import requests
 import urllib3
+import subprocess
+import time
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -78,3 +80,19 @@ class Miiify:
         payload = self.__container_payload__(label)
         response = requests.post(url, json=payload, verify=False, headers=headers)
         return response.status_code
+
+    def __is_alive__(self):
+        url = self.local_server
+        headers = self.__basic_headers__()
+        try:
+            response = requests.get(url, verify=False, headers=headers)
+        except:
+            return False
+        else:
+            return response.status_code == 200
+
+
+    def run(self):
+        subprocess.run(["./miiify.sh"])
+        while self.__is_alive__() == False:
+            time.sleep(2.0)
