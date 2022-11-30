@@ -6,7 +6,7 @@ class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
         self.name = ctx.name
-        self.server = ctx.server
+        self.remote_server = ctx.remote_server
 
     def get_content(self):
         try:
@@ -47,7 +47,7 @@ class Manifest:
         return dict
 
     def get_annotation_page(self, target):
-        id = f"{self.server}/annotations/{self.name}?target={target}"
+        id = f"{self.remote_server}/annotations/{self.name}?target={target}"
         return self.__annotation_page__(id)
 
 
