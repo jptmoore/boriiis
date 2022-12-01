@@ -2,6 +2,7 @@ import requests
 import urllib3
 import subprocess
 import time
+import os
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -12,6 +13,8 @@ class Miiify:
         self.creator = ctx.creator
         self.version = ctx.version
         self.local_server = ctx.local_server
+        self.app = ctx.app
+        self.app_dir = ctx.app_dir
 
     def __annotation_payload__(self, creator, box, content, target):
         dict = {
@@ -91,8 +94,12 @@ class Miiify:
         else:
             return response.status_code == 200
 
-
     def run(self):
-        subprocess.run(["./miiify.sh"])
+        os.chdir(self.app_dir)
+        subprocess.Popen(
+            [self.app],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.STDOUT,
+        )
         while self.__is_alive__() == False:
-            time.sleep(2.0)
+            time.sleep(1.0)

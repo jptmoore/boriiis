@@ -39,6 +39,9 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.remote_server = config_ini.get("miiify", "REMOTE_SERVER")
     ctx.local_repo = config_ini.get("miiify", "LOCAL_REPO")
     ctx.remote_repo = config_ini.get("miiify", "REMOTE_REPO")
+    ctx.app = config_ini.get("miiify", "APP")
+    ctx.app_dir = config_ini.get("miiify", "APP_DIR")
+
 
     # stage 1
     # manifest = Manifest(ctx)
