@@ -43,35 +43,33 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
 
-    # stage 1
-    # manifest = Manifest(ctx)
-    # manifest_content = manifest.get_content()
-    # manifest_links = manifest.get_links(manifest_content)
-    # manifest_targets = manifest.get_targets(manifest_content)
-    # manifest_zip = zip(manifest_links, manifest_targets)
-    # # stage 2
-    # ocr = Ocr(ctx)
-    # annotation = Annotation(ctx)
-    # annotation_pages = []
-    # for index, (link, target) in enumerate(manifest_zip):
-    #     annotation_page = manifest.get_annotation_page(target)
-    #     annotation_pages.append(annotation_page)
-    #     ocr_content = ocr.get_content(link)
-    #     response = annotation.add(ocr_content, target, index)
-    # new_manifest_content = manifest.add_annotation_pages(manifest_content, annotation_pages)
-    # miiify = Miiify(ctx)
-    # response = miiify.create_manifest(new_manifest_content)
-    # print(new_manifest_content)
-    #patch = Patch(ctx)
-    #diff = patch.diff(ctx)
-    #print(diff)
+    manifest = Manifest(ctx)
+    manifest_content = manifest.get_content()
+    manifest_links = manifest.get_links(manifest_content)
+    manifest_targets = manifest.get_targets(manifest_content)
+    manifest_zip = zip(manifest_links, manifest_targets)
+
 
     repo = Repository(ctx)
     repo.clone()
 
     miiify = Miiify(ctx)
     miiify.run()
-    print("got here")
+    miiify.create_container()
+
+    ocr = Ocr(ctx)
+    annotation = Annotation(ctx)
+    annotation_pages = []
+    for index, (link, target) in enumerate(manifest_zip):
+        annotation_page = manifest.get_annotation_page(target)
+        annotation_pages.append(annotation_page)
+        ocr_content = ocr.get_content(link)
+        response = annotation.add(ocr_content, target, index)
+    new_manifest_content = manifest.add_annotation_pages(manifest_content, annotation_pages)
+    response = miiify.create_manifest(new_manifest_content)
+    patch = Patch(ctx)
+    diff = patch.diff()
+    print(diff)
 
 if __name__ == "__main__":
     run()

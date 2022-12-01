@@ -79,7 +79,7 @@ class Miiify:
 
     def create_container(self):
         url = f"{self.local_server}/annotations/"
-        headers = self.__slug_headers(self.name)
+        headers = self.__slug_headers__(self.name)
         label = f"{self.name} by {self.creator}"
         payload = self.__container_payload__(label)
         response = requests.post(url, json=payload, verify=False, headers=headers)
