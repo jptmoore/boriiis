@@ -66,8 +66,8 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     #diff = patch.diff(ctx)
     #print(diff)
 
-    # repo = Repository(ctx)
-    # repo.clone()
+    repo = Repository(ctx)
+    repo.clone()
 
     miiify = Miiify(ctx)
     miiify.run()

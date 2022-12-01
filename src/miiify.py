@@ -9,6 +9,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Miiify:
     def __init__(self, ctx):
+        assert(os.path.exists(ctx.local_repo))
         self.name = ctx.name
         self.creator = ctx.creator
         self.version = ctx.version
