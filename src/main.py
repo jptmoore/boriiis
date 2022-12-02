@@ -43,13 +43,15 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     repo = Repository(ctx)
     repo.clone()
     miiify = Miiify(ctx)
-    miiify.run()
+    miiify.start()
     pipeline = Pipeline(ctx, miiify)
     manifest = pipeline.run()
     miiify.create_manifest(manifest)
     patch = Patch(ctx)
     diff = patch.diff()
-    if preview == False: print(diff)
+    if preview == False:
+        print(diff)
+
 
 if __name__ == "__main__":
     run()

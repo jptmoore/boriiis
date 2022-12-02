@@ -95,7 +95,7 @@ class Miiify:
         else:
             return response.status_code == 200
 
-    def run(self):
+    def start(self):
         os.chdir(self.app_dir)
         subprocess.Popen(
             [self.app],
