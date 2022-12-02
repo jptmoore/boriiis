@@ -44,7 +44,7 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     repo.clone()
     miiify = Miiify(ctx)
     miiify.run()
-    pipeline = Pipeline(ctx)
+    pipeline = Pipeline(ctx, miiify)
     manifest = pipeline.run()
     miiify.create_manifest(manifest)
     patch = Patch(ctx)

@@ -2,16 +2,15 @@ import requests
 from jsonpath_ng import jsonpath, parse
 
 from ocr import Ocr
-from annotation import Annotation
+from alto import Alto
 
 class Pipeline:
-    def __init__(self, ctx):
+    def __init__(self, ctx, miiify):
         self.manifest_link = ctx.manifest_link
         self.name = ctx.name
         self.remote_server = ctx.remote_server
-
         self.ocr = Ocr(ctx)
-        self.annotation = Annotation(ctx)
+        self.alto = Alto(ctx, miiify)
 
     def get_content(self):
         try:
@@ -73,7 +72,7 @@ class Pipeline:
         for index, (link, target) in enumerate(self.__zip__(manifest_content)):
             annotation_page = self.get_annotation_page(target)
             annotation_pages.append(annotation_page)
-            ocr_content = self.ocr.get_content(link)
-            response = self.annotation.add(ocr_content, target, index)
+            alto = self.ocr.get_content(link)
+            response = self.alto.parse(alto, target, index)
         content = self.add_annotation_pages(manifest_content, annotation_pages)
         return content

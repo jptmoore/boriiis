@@ -1,16 +1,12 @@
 import xmltodict
 from jsonpath_ng import jsonpath, parse
 
-from miiify import Miiify
-
-import json
-
-class Annotation:
-    def __init__(self, ctx):
+class Alto:
+    def __init__(self, ctx, miiify):
         self.name = ctx.name
         self.preview = ctx.preview
-        self.miiify = Miiify(ctx)
-       
+        self.miiify = miiify
+    
 
     def __annotate__(self, slug, box, content, target):
         if self.preview:
@@ -39,7 +35,7 @@ class Annotation:
         self.__parse_textblock_worker__(content, target, index)
 
 
-    def add(self, xml, target, index):
+    def parse(self, xml, target, index):
         dict = xmltodict.parse(xml)
         self.__parse_textblock__(dict, target, index)
         
