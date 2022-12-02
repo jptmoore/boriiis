@@ -4,7 +4,7 @@ from jsonpath_ng import jsonpath, parse
 from ocr import Ocr
 from annotation import Annotation
 
-class Manifest:
+class Pipeline:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
         self.name = ctx.name
