@@ -104,3 +104,5 @@ class Miiify:
         )
         while self.__is_alive__() == False:
             time.sleep(1.0)
+        self.create_container()
+

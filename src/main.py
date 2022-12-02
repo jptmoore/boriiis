@@ -1,9 +1,6 @@
 import click
-import emoji
 from configparser import ConfigParser
 from manifest import Manifest
-from ocr import Ocr
-from annotation import Annotation
 from patch import Patch
 from miiify import Miiify
 from repository import Repository
@@ -42,31 +39,17 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
-
-    manifest = Manifest(ctx)
-    manifest_content = manifest.get_content()
-    manifest_links = manifest.get_links(manifest_content)
-    manifest_targets = manifest.get_targets(manifest_content)
-    manifest_zip = zip(manifest_links, manifest_targets)
-
-
     repo = Repository(ctx)
     repo.clone()
 
     miiify = Miiify(ctx)
     miiify.run()
-    miiify.create_container()
 
-    ocr = Ocr(ctx)
-    annotation = Annotation(ctx)
-    annotation_pages = []
-    for index, (link, target) in enumerate(manifest_zip):
-        annotation_page = manifest.get_annotation_page(target)
-        annotation_pages.append(annotation_page)
-        ocr_content = ocr.get_content(link)
-        response = annotation.add(ocr_content, target, index)
-    new_manifest_content = manifest.add_annotation_pages(manifest_content, annotation_pages)
-    response = miiify.create_manifest(new_manifest_content)
+    manifest = Manifest(ctx)
+    new_manifest = manifest.run()
+    
+    miiify.create_manifest(new_manifest)
+
     patch = Patch(ctx)
     diff = patch.diff()
     print(diff)

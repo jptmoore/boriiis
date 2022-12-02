@@ -1,12 +1,17 @@
 import requests
 from jsonpath_ng import jsonpath, parse
 
+from ocr import Ocr
+from annotation import Annotation
 
 class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
         self.name = ctx.name
         self.remote_server = ctx.remote_server
+
+        self.ocr = Ocr(ctx)
+        self.annotation = Annotation(ctx)
 
     def get_content(self):
         try:
@@ -55,3 +60,20 @@ class Manifest:
         for (item, annotation_page) in zip(manifest['items'], annotation_pages):
             item['annotations'] = [ annotation_page ]
         return manifest
+
+    def __zip__(self, manifest_content):
+        manifest_links = self.get_links(manifest_content)
+        manifest_targets = self.get_targets(manifest_content)
+        content = zip(manifest_links, manifest_targets)
+        return content
+
+    def run(self):
+        annotation_pages = []
+        manifest_content = self.get_content()
+        for index, (link, target) in enumerate(self.__zip__(manifest_content)):
+            annotation_page = self.get_annotation_page(target)
+            annotation_pages.append(annotation_page)
+            ocr_content = self.ocr.get_content(link)
+            response = self.annotation.add(ocr_content, target, index)
+        content = self.add_annotation_pages(manifest_content, annotation_pages)
+        return content
