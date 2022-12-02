@@ -49,8 +49,7 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     miiify.create_manifest(manifest)
     patch = Patch(ctx)
     diff = patch.diff()
-    print(diff)
-
+    if preview == False: print(diff)
 
 if __name__ == "__main__":
     run()

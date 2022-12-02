@@ -11,6 +11,7 @@ class Alto:
     def __annotate__(self, slug, box, content, target):
         if self.preview:
             print(content)
+            return None
         else:
             response = self.miiify.create_annotation(slug, box, content, target)
             return response
