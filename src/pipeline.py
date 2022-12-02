@@ -12,7 +12,7 @@ class Pipeline:
         self.ocr = Ocr(ctx)
         self.alto = Alto(ctx, miiify)
 
-    def get_content(self):
+    def __get_content__(self):
         try:
             response = requests.get(self.manifest_link)
         except Exception as e:
@@ -26,7 +26,7 @@ class Pipeline:
                 print(f"Got status code {response.status_code}")
                 return None
 
-    def get_links(self, json):
+    def __get_links__(self, json):
         try:
             jsonpath_expression = parse("items[*].items[*].items[*].body.id")
             lis = [match.value for match in jsonpath_expression.find(json)]
@@ -36,7 +36,7 @@ class Pipeline:
         else:
             return lis
 
-    def get_targets(self, json):
+    def __get_targets__(self, json):
         try:
             jsonpath_expression = parse("items[*].items[*].items[*].target")
             lis = [match.value for match in jsonpath_expression.find(json)]
@@ -50,29 +50,29 @@ class Pipeline:
         dict = {"id": id, "type": "AnnotationPage"}
         return dict
 
-    def get_annotation_page(self, target):
+    def __get_annotation_page__(self, target):
         id = f"{self.remote_server}/annotations/{self.name}?target={target}"
         return self.__annotation_page__(id)
 
 
-    def add_annotation_pages(self, manifest, annotation_pages):
+    def __add_annotation_pages__(self, manifest, annotation_pages):
         for (item, annotation_page) in zip(manifest['items'], annotation_pages):
             item['annotations'] = [ annotation_page ]
         return manifest
 
     def __zip__(self, manifest_content):
-        manifest_links = self.get_links(manifest_content)
-        manifest_targets = self.get_targets(manifest_content)
+        manifest_links = self.__get_links__(manifest_content)
+        manifest_targets = self.__get_targets__(manifest_content)
         content = zip(manifest_links, manifest_targets)
         return content
 
     def run(self):
         annotation_pages = []
-        manifest_content = self.get_content()
+        manifest_content = self.__get_content__()
         for index, (link, target) in enumerate(self.__zip__(manifest_content)):
-            annotation_page = self.get_annotation_page(target)
+            annotation_page = self.__get_annotation_page__(target)
             annotation_pages.append(annotation_page)
             alto = self.ocr.get_content(link)
             response = self.alto.parse(alto, target, index)
-        content = self.add_annotation_pages(manifest_content, annotation_pages)
+        content = self.__add_annotation_pages__(manifest_content, annotation_pages)
         return content
