@@ -11,6 +11,9 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 # tesseract
 RUN apk add --update --no-cache tesseract-ocr
 
+# git
+RUN apk add --update --no-cache git
+
 # boriiis deps
 
 RUN apk update \
@@ -20,9 +23,10 @@ RUN apk update \
     && apk del build-deps
 
 COPY requirements.txt requirements.txt
+COPY src .
 
 RUN pip install -r requirements.txt
 
 USER miiify
 
-ENTRYPOINT ["sh"]
+ENTRYPOINT ["python", "main.py"]
