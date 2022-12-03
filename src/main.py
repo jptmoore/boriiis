@@ -15,7 +15,7 @@ config_ini = ConfigParser()
 config_ini.read("config.ini")
 
 
-@click.command()
+@click.command(name="boriiis")
 @click.option("--name", required=True)
 @click.option("--manifest", required=True)
 @click.option("--lang", default=config_ini.get("tesseract", "LANG"))
@@ -23,7 +23,7 @@ config_ini.read("config.ini")
 @click.option("--oem", default=int(config_ini.get("tesseract", "OEM")))
 @click.option("--psm", default=int(config_ini.get("tesseract", "PSM")))
 @click.option("--preview", is_flag=True, help="Output result of OCR only.")
-@click.version_option(version=config_ini.get("main", "VERSION"))
+@click.version_option(prog_name="boriiis", version=config_ini.get("main", "VERSION"))
 def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.name = name
     ctx.manifest_link = manifest
