@@ -4,7 +4,7 @@ from pipeline import Pipeline
 from patch import Patch
 from miiify import Miiify
 from repository import Repository
-
+from tqdm import tqdm
 
 class Context:
     pass
@@ -40,18 +40,22 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
-    repo = Repository(ctx)
-    repo.clone()
-    miiify = Miiify(ctx)
-    miiify.start()
-    pipeline = Pipeline(ctx, miiify)
-    manifest = pipeline.run()
-    miiify.create_manifest(manifest)
-    patch = Patch(ctx)
-    diff = patch.diff()
-    if preview == False:
-        print(diff)
-
+    with tqdm(desc="running boriiis", total=100, colour='green') as pbar:
+        repo = Repository(ctx)
+        repo.clone()
+        pbar.update(25)
+        miiify = Miiify(ctx)
+        miiify.start()
+        pbar.update(25)
+        pipeline = Pipeline(ctx, miiify)
+        manifest = pipeline.run()
+        miiify.create_manifest(manifest)
+        pbar.update(25)
+        patch = Patch(ctx)
+        diff = patch.diff()
+        if preview == False:
+            print(diff)
+        pbar.update(25)
 
 if __name__ == "__main__":
     run()
