@@ -69,7 +69,7 @@ class Miiify:
         headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
         response = requests.post(url, json=payload, verify=False, headers=headers)
-        return response.status_code
+        return payload
 
     def create_manifest(self, payload):
         url = f"{self.local_server}/manifest/{self.name}"

@@ -54,7 +54,7 @@ def run(name, manifest, lang, creator, oem, psm, preview):
         patch = Patch(ctx)
         diff = patch.diff()
         if preview == False:
-            print(diff)
+            print(diff)            
         pbar.update(25)
 
 if __name__ == "__main__":
