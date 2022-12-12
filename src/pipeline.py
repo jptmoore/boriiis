@@ -15,7 +15,7 @@ class Pipeline:
         self.alto = Alto(ctx, miiify)
         self.log = ctx.log
 
-    def __get_manifest_content__(self):
+    def __get_manifest__(self):
         try:
             response = requests.get(self.manifest_link)
         except Exception as e:
@@ -28,7 +28,7 @@ class Pipeline:
             content = response.json()
             return content
 
-    def __get_links__(self, json):
+    def __get_image_links__(self, json):
         try:
             jsonpath_expression = parse("items[*].items[*].items[*].body.id")
             lis = [match.value for match in jsonpath_expression.find(json)]
@@ -62,18 +62,18 @@ class Pipeline:
             item['annotations'] = [ annotation_page ]
         return manifest
 
-    def __zip__(self, manifest_content):
-        manifest_links = self.__get_links__(manifest_content)
-        manifest_targets = self.__get_targets__(manifest_content)
-        if manifest_links == None or manifest_targets == None:
+    def __zip__(self, json):
+        manifest_image_links = self.__get_image_links__(json)
+        manifest_targets = self.__get_targets__(json)
+        if manifest_image_links == None or manifest_targets == None:
             return []
         else:
-            return zip(manifest_links, manifest_targets)
+            return zip(manifest_image_links, manifest_targets)
 
     def run(self, pbar):
         annotations = []
-        manifest_content = self.__get_manifest_content__()
-        zipped = self.__zip__(manifest_content)
+        json = self.__get_manifest__()
+        zipped = self.__zip__(json)
         pbar.total = len(list(zipped))
         for index, (link, target) in enumerate(zipped):           
             alto = self.ocr.get_content(link)
@@ -85,5 +85,5 @@ class Pipeline:
             annotations.append(annotation_targets)
             pbar.update(index)
         pbar.update(pbar.total)
-        content = self.__add_annotation_pages__(manifest_content, annotations)
+        content = self.__add_annotation_pages__(json, annotations)
         return content
