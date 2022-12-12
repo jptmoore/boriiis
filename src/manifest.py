@@ -33,6 +33,10 @@ class Manifest:
         else:
             return lis
 
+    def get_image_count(self, json):
+        return len(self.__get_image_links__(json))
+    
+
     def __get_targets__(self, json):
         try:
             jsonpath_expression = parse("items[*].items[*].items[*].target")
@@ -47,7 +51,7 @@ class Manifest:
         dict = {"id": id, "type": "AnnotationPage"}
         return dict
 
-    def make_annotation_page(self, target):
+    def __make_annotation_page__(self, target):
         encoded_target = quote(target)
         id = f"{self.remote_server}/annotations/{self.name}?target={encoded_target}"
         return self.__annotation_page__(id)
@@ -57,10 +61,17 @@ class Manifest:
             item['annotations'] = [ annotation_page ]
         return manifest
 
-    def zip(self, json):
+    def enumerated_data(self, json):
         manifest_image_links = self.__get_image_links__(json)
         manifest_targets = self.__get_targets__(json)
         if manifest_image_links == None or manifest_targets == None:
             return []
         else:
-            return zip(manifest_image_links, manifest_targets)
+            return enumerate(zip(manifest_image_links, manifest_targets))
+
+    def make_annotation_targets(self, targets):
+        annotation_targets = []
+        for item in targets:
+            annotation_page = self.__make_annotation_page__(item)
+            annotation_targets.append(annotation_page)
+        return annotation_targets

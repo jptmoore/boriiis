@@ -12,17 +12,13 @@ class Pipeline:
     def run(self, pbar):
         annotations = []
         json = self.manifest.get_manifest()
-        zipped = self.manifest.zip(json)
-        pbar.total = len(list(zipped))
-        for index, (link, target) in enumerate(zipped):           
-            alto = self.ocr.get_alto(link)
+        pbar.total = self.manifest.get_image_count(json)
+        for index, (image, target) in self.manifest.enumerated_data(json):
+            alto = self.ocr.get_alto(image)
             alto_targets = self.alto.parse(alto, target, index)
-            annotation_targets = []
-            for item in alto_targets:
-                annotation_page = self.manifest.make_annotation_page(item)
-                annotation_targets.append(annotation_page)
+            annotation_targets = self.manifest.make_annotation_targets(alto_targets)
             annotations.append(annotation_targets)
             pbar.update(index)
         pbar.update(pbar.total)
-        content = self.manifest.add_annotation_pages(json, annotations)
-        return content
+        new_manifest = self.manifest.add_annotation_pages(json, annotations)
+        return new_manifest

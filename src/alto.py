@@ -1,5 +1,5 @@
 import xmltodict
-from jsonpath_ng import jsonpath, parse
+from jsonpath_ng import parse
 
 class Alto:
     def __init__(self, ctx, miiify):
