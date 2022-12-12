@@ -6,14 +6,11 @@ class Alto:
         self.name = ctx.name
         self.preview = ctx.preview
         self.miiify = miiify
-    
 
     def __annotate__(self, slug, box, content, target):
         if self.preview:
             print(content)
-        response = self.miiify.create_annotation(slug, box, content, target)
-        return response
-
+        return self.miiify.create_annotation(slug, box, content, target)
     
     def __parse_string__(self, tb):
         jsonpath_expression = parse('TextLine[*].String[*].@CONTENT')
@@ -28,7 +25,8 @@ class Alto:
             box = f"{tb['@HPOS']},{tb['@VPOS']},{tb['@WIDTH']},{tb['@HEIGHT']}"
             content = self.__parse_string__(tb)
             response = self.__annotate__(slug, box, content, target)
-            targets.append(response['target'])
+            if response != None:
+                targets.append(response['target'])
         return targets
             
 

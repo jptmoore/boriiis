@@ -6,11 +6,17 @@ from miiify import Miiify
 from repository import Repository
 from tqdm import tqdm
 
+import logging
+
+logging.basicConfig(format='%(message)s')
+log = logging.getLogger(__name__)
+
 class Context:
     pass
 
 
 ctx = Context()
+ctx.log = log
 config_ini = ConfigParser()
 config_ini.read("config.ini")
 

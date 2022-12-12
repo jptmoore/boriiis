@@ -13,27 +13,27 @@ class Pipeline:
         self.remote_server = ctx.remote_server
         self.ocr = Ocr(ctx)
         self.alto = Alto(ctx, miiify)
+        self.log = ctx.log
 
     def __get_manifest_content__(self):
         try:
             response = requests.get(self.manifest_link)
         except Exception as e:
-            print(e)
+            self.log.warning("fail to get manifest")
+            return None
+        if response.status_code != 200:
+            self.log.warning(f"Got a {response.status_code} code when accessing manifest")
             return None
         else:
-            if response.status_code == 200:
-                content = response.json()
-                return content
-            else:
-                print(f"Got status code {response.status_code}")
-                return None
+            content = response.json()
+            return content
 
     def __get_links__(self, json):
         try:
             jsonpath_expression = parse("items[*].items[*].items[*].body.id")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
-            print(e)
+            self.log.warning("failed to get image links from manifest")
             return None
         else:
             return lis
@@ -43,7 +43,7 @@ class Pipeline:
             jsonpath_expression = parse("items[*].items[*].items[*].target")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
-            print(e)
+            self.log.warning("failed to get targets from manifest")
             return None
         else:
             return lis
@@ -65,8 +65,10 @@ class Pipeline:
     def __zip__(self, manifest_content):
         manifest_links = self.__get_links__(manifest_content)
         manifest_targets = self.__get_targets__(manifest_content)
-        content = zip(manifest_links, manifest_targets)
-        return content
+        if manifest_links == None or manifest_targets == None:
+            return []
+        else:
+            return zip(manifest_links, manifest_targets)
 
     def run(self):
         annotations = []

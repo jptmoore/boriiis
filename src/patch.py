@@ -3,6 +3,7 @@ from git import Repo
 class Patch:
     def __init__(self, ctx):
         self.local_repo = ctx.local_repo
+        self.log = ctx.log
 
     def diff(self):
         try:
@@ -11,5 +12,5 @@ class Patch:
             content = repo.git.diff("origin/master", "master")
             return content
         except Exception as e:
-            print(e)
+            self.log.warning("failed to create diff")
             return None        

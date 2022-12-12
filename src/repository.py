@@ -7,13 +7,14 @@ class Repository:
     def __init__(self, ctx):
         self.local_repo = ctx.local_repo
         self.remote_repo = ctx.remote_repo
+        self.log = ctx.log
 
     def __remove__(self):
         if os.path.exists(self.local_repo):
             try:
                 shutil.rmtree(self.local_repo)
             except Exception as e:
-                print(e)
+                self.log.warning("failed to remove existing repository")
                 return None
             else:
                 pass
@@ -25,5 +26,5 @@ class Repository:
             assert repo.__class__ is Repo
             return repo
         except Exception as e:
-            print(e)
+            self.log.warning("failed to clone repository")
             return None

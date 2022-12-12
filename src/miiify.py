@@ -16,6 +16,7 @@ class Miiify:
         self.local_server = ctx.local_server
         self.app = ctx.app
         self.app_dir = ctx.app_dir
+        self.log = ctx.log
 
     def __annotation_payload__(self, creator, box, content, target):
         dict = {
@@ -68,22 +69,46 @@ class Miiify:
         url = f"{self.local_server}/annotations/{self.name}/"
         headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
-        response = requests.post(url, json=payload, verify=False, headers=headers)
-        return payload
+        try:
+            response = requests.post(url, json=payload, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to create annotation")
+            return None
+        if response.status_code != 201:
+            self.log.warning(f"Got a {response.status_code} code when creating annotation")
+            return None 
+        else:
+            return payload
 
     def create_manifest(self, payload):
         url = f"{self.local_server}/manifest/{self.name}"
         headers = self.__basic_headers__()
-        response = requests.post(url, json=payload, verify=False, headers=headers)
-        return response.status_code
+        try:
+            response = requests.post(url, json=payload, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to create manifest")
+            return None
+        if response.status_code != 201:
+            self.log.warning(f"Got a {response.status_code} code when creating manifest")
+            return None                 
+        else:
+            return payload
 
     def create_container(self):
         url = f"{self.local_server}/annotations/"
         headers = self.__slug_headers__(self.name)
         label = f"{self.name} by {self.creator}"
         payload = self.__container_payload__(label)
-        response = requests.post(url, json=payload, verify=False, headers=headers)
-        return response.status_code
+        try:
+            response = requests.post(url, json=payload, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to create container")
+            return None
+        if response.status_code != 201:
+            self.log.warning(f"Got a {response.status_code} code when creating container")
+            return None
+        else:          
+            return payload
 
     def __is_alive__(self):
         url = self.local_server
