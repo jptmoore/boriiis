@@ -2,7 +2,14 @@
 
 OCR images from a IIIF manifest to generate a git patch for [Miiify](https://github.com/nationalarchives/miiify).
 
-### Example (requires Docker)
+
+### Build the tool
+
+```bash
+docker build -t jptmoore/boriiis .
+```
+
+### Run the tool
 
 ```bash
 ./boriiis.sh --name my-collection --creator john --manifest https://miiifystore.s3.eu-west-2.amazonaws.com/iiif/ocrtest.json
