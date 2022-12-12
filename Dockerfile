@@ -15,13 +15,13 @@ RUN apk add --update --no-cache tesseract-ocr git
 RUN apk update \
     && apk add --virtual build-deps gcc python3-dev musl-dev \
     && apk add jpeg-dev zlib-dev libjpeg \
-    && pip install Pillow \
+    && pip3 install Pillow \
     && apk del build-deps
 
 COPY requirements.txt requirements.txt
 COPY src .
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 USER miiify
 
