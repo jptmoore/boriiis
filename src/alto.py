@@ -1,11 +1,13 @@
 import xmltodict
 from jsonpath_ng import parse
+from urllib.parse import quote
 
 class Alto:
     def __init__(self, ctx, miiify):
         self.name = ctx.name
         self.preview = ctx.preview
         self.miiify = miiify
+        self.remote_server = ctx.remote_server
 
     def __annotate__(self, slug, box, content, target):
         if self.preview:
@@ -23,6 +25,23 @@ class Alto:
         else:
             return content
 
+    def __annotation_page__(self, id):
+        dict = {"id": id, "type": "AnnotationPage"}
+        return dict
+
+    def __make_annotation_page__(self, target):
+        encoded_target = quote(target)
+        id = f"{self.remote_server}/annotations/{self.name}?target={encoded_target}"
+        return self.__annotation_page__(id)
+
+    def __make_annotation_targets__(self, targets):
+        annotation_targets = []
+        for item in targets:
+            annotation_page = self.__make_annotation_page__(item)
+            annotation_targets.append(annotation_page)
+        return annotation_targets
+
+
     def __parse_textblock_worker__(self, content, target, index):
         targets = []
         for tb in content:
@@ -33,7 +52,7 @@ class Alto:
                 response = self.__annotate__(slug, box, content, target)
                 if response != None:
                     targets.append(response['target'])
-        return targets
+        return self.__make_annotation_targets__(targets)
             
 
     def __parse_textblock__(self, dict, target, index):

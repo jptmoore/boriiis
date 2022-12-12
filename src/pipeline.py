@@ -15,9 +15,8 @@ class Pipeline:
         pbar.total = self.manifest.get_image_count(json)
         for index, (image, target) in self.manifest.enumerated_data(json):
             alto = self.ocr.get_alto(image)
-            alto_targets = self.alto.parse(alto, target, index)
-            annotation_targets = self.manifest.make_annotation_targets(alto_targets)
-            annotations.append(annotation_targets)
+            annotation = self.alto.parse(alto, target, index)
+            annotations.append(annotation)
             pbar.update(index)
         pbar.update(pbar.total)
         new_manifest = self.manifest.add_annotations(json, annotations)

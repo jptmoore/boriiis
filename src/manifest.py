@@ -1,13 +1,9 @@
 import requests
 from jsonpath_ng import parse
-
-from urllib.parse import quote
-
 class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
         self.name = ctx.name
-        self.remote_server = ctx.remote_server
         self.log = ctx.log
 
     def get_manifest(self):
@@ -47,15 +43,6 @@ class Manifest:
         else:
             return lis
 
-    def __annotation_page__(self, id):
-        dict = {"id": id, "type": "AnnotationPage"}
-        return dict
-
-    def __make_annotation_page__(self, target):
-        encoded_target = quote(target)
-        id = f"{self.remote_server}/annotations/{self.name}?target={encoded_target}"
-        return self.__annotation_page__(id)
-
     def add_annotations(self, manifest, annotation_pages):
         for (item, annotation_page) in zip(manifest['items'], annotation_pages):
             item['annotations'] = [ annotation_page ]
@@ -68,10 +55,3 @@ class Manifest:
             return []
         else:
             return enumerate(zip(manifest_image_links, manifest_targets))
-
-    def make_annotation_targets(self, targets):
-        annotation_targets = []
-        for item in targets:
-            annotation_page = self.__make_annotation_page__(item)
-            annotation_targets.append(annotation_page)
-        return annotation_targets
