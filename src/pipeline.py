@@ -76,7 +76,7 @@ class Pipeline:
         zipped = self.__zip__(json)
         pbar.total = len(list(zipped))
         for index, (link, target) in enumerate(zipped):           
-            alto = self.ocr.get_content(link)
+            alto = self.ocr.get_alto(link)
             alto_targets = self.alto.parse(alto, target, index)
             annotation_targets = []
             for item in alto_targets:

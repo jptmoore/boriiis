@@ -13,10 +13,15 @@ class Alto:
         return self.miiify.create_annotation(slug, box, content, target)
     
     def __parse_string__(self, tb):
-        jsonpath_expression = parse('TextLine[*].String[*].@CONTENT')
-        strings = [match.value for match in jsonpath_expression.find(tb)]
-        content = ' '.join(strings)
-        return content
+        try:
+            jsonpath_expression = parse('TextLine[*].String[*].@CONTENT')
+            strings = [match.value for match in jsonpath_expression.find(tb)]
+            content = ' '.join(strings)
+        except Exception as e:
+            self.log.warning("failed to string content")
+            return None
+        else:
+            return content
 
     def __parse_textblock_worker__(self, content, target, index):
         targets = []
@@ -24,21 +29,32 @@ class Alto:
             slug = f"image_{index}_{tb['@ID']}"
             box = f"{tb['@HPOS']},{tb['@VPOS']},{tb['@WIDTH']},{tb['@HEIGHT']}"
             content = self.__parse_string__(tb)
-            response = self.__annotate__(slug, box, content, target)
-            if response != None:
-                targets.append(response['target'])
+            if content != None:
+                response = self.__annotate__(slug, box, content, target)
+                if response != None:
+                    targets.append(response['target'])
         return targets
             
 
     def __parse_textblock__(self, dict, target, index):
-        jsonpath_expression = parse('alto.Layout.Page.PrintSpace.ComposedBlock[*].TextBlock[*]')
-        content = [match.value for match in jsonpath_expression.find(dict)]
-        return self.__parse_textblock_worker__(content, target, index)
+        try:
+            jsonpath_expression = parse('alto.Layout.Page.PrintSpace.ComposedBlock[*].TextBlock[*]')
+            content = [match.value for match in jsonpath_expression.find(dict)]
+        except Exception as e:
+            self.log.warning("failed to parse textblock")
+            return []
+        else:        
+            return self.__parse_textblock_worker__(content, target, index)
 
 
     def parse(self, xml, target, index):
-        dict = xmltodict.parse(xml)
-        return self.__parse_textblock__(dict, target, index)
+        try:
+            dict = xmltodict.parse(xml)
+        except Exception as e:
+            self.log.warning("failed to parse xml")
+            return []
+        else:
+            return self.__parse_textblock__(dict, target, index)
         
 
 
