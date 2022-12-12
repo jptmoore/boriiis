@@ -46,22 +46,18 @@ def run(name, manifest, lang, creator, oem, psm, preview):
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
-    with tqdm(desc="running boriiis", total=100, colour='green') as pbar:
+    with tqdm(desc="boriiis", colour='green') as pbar:
         repo = Repository(ctx)
         repo.clone()
-        pbar.update(25)
         miiify = Miiify(ctx)
         miiify.start()
-        pbar.update(25)
         pipeline = Pipeline(ctx, miiify)
-        manifest = pipeline.run()
+        manifest = pipeline.run(pbar)
         miiify.create_manifest(manifest)
-        pbar.update(25)
         patch = Patch(ctx)
         diff = patch.diff()
         if preview == False:
             print(diff)            
-        pbar.update(25)
 
 if __name__ == "__main__":
     run()

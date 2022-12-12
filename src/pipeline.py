@@ -70,10 +70,12 @@ class Pipeline:
         else:
             return zip(manifest_links, manifest_targets)
 
-    def run(self):
+    def run(self, pbar):
         annotations = []
         manifest_content = self.__get_manifest_content__()
-        for index, (link, target) in enumerate(self.__zip__(manifest_content)):           
+        zipped = self.__zip__(manifest_content)
+        pbar.total = len(list(zipped))
+        for index, (link, target) in enumerate(zipped):           
             alto = self.ocr.get_content(link)
             alto_targets = self.alto.parse(alto, target, index)
             annotation_targets = []
@@ -81,5 +83,7 @@ class Pipeline:
                 annotation_page = self.__make_annotation_page__(item)
                 annotation_targets.append(annotation_page)
             annotations.append(annotation_targets)
+            pbar.update(index)
+        pbar.update(pbar.total)
         content = self.__add_annotation_pages__(manifest_content, annotations)
         return content
