@@ -56,7 +56,7 @@ class Manifest:
         id = f"{self.remote_server}/annotations/{self.name}?target={encoded_target}"
         return self.__annotation_page__(id)
 
-    def add_annotation_pages(self, manifest, annotation_pages):
+    def add_annotations(self, manifest, annotation_pages):
         for (item, annotation_page) in zip(manifest['items'], annotation_pages):
             item['annotations'] = [ annotation_page ]
         return manifest

@@ -20,5 +20,5 @@ class Pipeline:
             annotations.append(annotation_targets)
             pbar.update(index)
         pbar.update(pbar.total)
-        new_manifest = self.manifest.add_annotation_pages(json, annotations)
+        new_manifest = self.manifest.add_annotations(json, annotations)
         return new_manifest
