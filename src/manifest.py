@@ -45,7 +45,7 @@ class Manifest:
 
     def add_annotations(self, manifest, annotation_pages):
         for (item, annotation_page) in zip(manifest['items'], annotation_pages):
-            item['annotations'] = [ annotation_page ]
+            item['annotations'] =  annotation_page 
         return manifest
 
     def enumerated_data(self, json):
