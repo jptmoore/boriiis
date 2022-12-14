@@ -124,7 +124,8 @@ class Miiify:
             self.log.warning("failed to get annotation")
             return None
         else:
-            return response.status_code == 200
+            json = response.json()
+            return response.status_code == 200 and json['items'] != []
 
 
     def annotation_total(self):
