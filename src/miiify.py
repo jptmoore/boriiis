@@ -75,7 +75,7 @@ class Miiify:
             self.log.warning("failed to create annotation")
             return None
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating annotation")
+            self.log.debug(f"Got a {response.status_code} code when creating annotation")
             return None 
         else:
             return payload
@@ -89,7 +89,7 @@ class Miiify:
             self.log.warning("failed to create manifest")
             return None
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating manifest")
+            self.log.debug(f"Got a {response.status_code} code when creating manifest")
             return None                 
         else:
             return payload
@@ -105,7 +105,7 @@ class Miiify:
             self.log.warning("failed to create container")
             return None
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating container")
+            self.log.debug(f"Got a {response.status_code} code when creating container")
             return None
         else:          
             return payload
