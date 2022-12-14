@@ -26,17 +26,19 @@ config_ini.read("config.ini")
 @click.option("--manifest", required=True)
 @click.option("--lang", default=config_ini.get("tesseract", "LANG"))
 @click.option("--creator", default=config_ini.get("main", "CREATOR"))
+@click.option("--page-limit", default=int(config_ini.get("miiify", "PAGE_LIMIT")))
 @click.option("--oem", default=int(config_ini.get("tesseract", "OEM")))
 @click.option("--psm", default=int(config_ini.get("tesseract", "PSM")))
 @click.option("--preview", is_flag=True, help="Output result of OCR only.")
 @click.version_option(prog_name="boriiis", version=config_ini.get("main", "VERSION"))
-def run(name, manifest, lang, creator, oem, psm, preview):
+def run(name, manifest, lang, creator, oem, psm, page_limit, preview):
     ctx.name = name
     ctx.manifest_link = manifest
     ctx.lang = lang
     ctx.creator = creator
     ctx.oem = oem
     ctx.psm = psm
+    ctx.page_limit = page_limit
     ctx.preview = preview
     ctx.version = config_ini.get("main", "VERSION")
     ctx.local_server = config_ini.get("miiify", "LOCAL_SERVER")

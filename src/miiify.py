@@ -65,6 +65,11 @@ class Miiify:
         dict["Slug"] = slug
         return dict
 
+    def __link_only_headers__(self):
+        dict = self.__basic_headers__()
+        dict["Prefer"] = 'return=representation;include="http://www.w3.org/ns/oa#PreferContainedIRIs"'
+        return dict        
+
     def create_annotation(self, slug, box, content, target):
         url = f"{self.local_server}/annotations/{self.name}/"
         headers = self.__slug_headers__(slug)
@@ -109,6 +114,34 @@ class Miiify:
             return None
         else:          
             return payload
+
+    
+    def annotation_exists(self, url):
+        headers = self.__link_only_headers__()
+        try:
+            response = requests.get(url, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to get annotation")
+            return None
+        else:
+            return response.status_code == 200
+
+
+    def annotation_total(self):
+        headers = self.__link_only_headers__()
+        url = f"{self.local_server}/annotations/{self.name}/"
+        try:
+            response = requests.get(url, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to get annotation")
+            return None
+        if response.status_code != 200:
+            self.log.warning(f"Got a {response.status_code} code when reading annotation total")
+            return None
+        else:
+            json = response.json()       
+            return json['total']
+
 
     def __is_alive__(self):
         url = self.local_server
