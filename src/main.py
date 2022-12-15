@@ -8,21 +8,21 @@ from tqdm import tqdm
 
 import logging
 
-log_format = "%(asctime)s::%(levelname)s::%(name)s::"\
-             "%(filename)s::%(lineno)d::%(message)s"
-logging.basicConfig(level='INFO', format=log_format)
-log = logging.getLogger(__name__)
-
 class Context:
     pass
-
 
 ctx = Context()
 config_ini = ConfigParser()
 config_ini.read("config.ini")
+NAME = config_ini.get("main", "NAME")
+
+log_format = "%(asctime)s::%(levelname)s::%(name)s::"\
+             "%(filename)s::%(lineno)d::%(message)s"
+logging.basicConfig(level='INFO', format=log_format)
+log = logging.getLogger(NAME)
 
 
-@click.command(name="boriiis")
+@click.command(name=NAME)
 @click.option("--name", required=True, help="Name of collection.")
 @click.option("--manifest", required=True, help="IIIF manifest.")
 @click.option("--lang", type=click.Choice(['eng', 'fra']), show_default=True, default=config_ini.get("tesseract", "LANG"), help="Current languages supported.")
@@ -32,7 +32,7 @@ config_ini.read("config.ini")
 @click.option("--psm", show_default=True, default=int(config_ini.get("tesseract", "PSM")), help="Tesseract segmentation engine mode.")
 @click.option("--preview", is_flag=True, help="Text output of OCR.")
 @click.option("--debug", is_flag=True, help="Enable debug mode.")
-@click.version_option(prog_name="boriiis", version=config_ini.get("main", "VERSION"))
+@click.version_option(prog_name=NAME, version=config_ini.get("main", "VERSION"))
 def run(name, manifest, lang, creator, oem, psm, page_limit, preview, debug):
     if debug: log.setLevel(logging.DEBUG)
     ctx.log = log
@@ -53,7 +53,7 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, debug):
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
-    with tqdm(desc="boriiis", colour='green') as pbar:
+    with tqdm(desc=NAME, colour='green') as pbar:
         repo = Repository(ctx)
         repo.clone()
         miiify = Miiify(ctx)
