@@ -14,9 +14,11 @@ class Miiify:
         self.creator = ctx.creator
         self.version = ctx.version
         self.local_server = ctx.local_server
+        self.remote_server = ctx.remote_server
         self.app = ctx.app
         self.app_dir = ctx.app_dir
         self.log = ctx.log
+        self.update = ctx.update
 
     def __annotation_payload__(self, creator, box, content, target):
         dict = {
@@ -70,7 +72,7 @@ class Miiify:
         dict["Prefer"] = 'return=representation;include="http://www.w3.org/ns/oa#PreferContainedIRIs"'
         return dict        
 
-    def create_annotation(self, slug, box, content, target):
+    def __create_annotation__(self, slug, box, content, target):
         url = f"{self.local_server}/annotations/{self.name}/"
         headers = self.__slug_headers__(slug)
         payload = self.__annotation_payload__(self.creator, box, content, target)
@@ -80,12 +82,38 @@ class Miiify:
             self.log.warning("failed to create annotation")
             return None
         if response.status_code != 201:
-            self.log.debug(f"Got a {response.status_code} code when creating annotation")
+            self.log.warning(f"Got a {response.status_code} code when creating annotation")
             return None 
         else:
             return payload
 
-    def create_manifest(self, payload):
+
+    def __update_annotation__(self, slug, box, content, target):
+        local = f"{self.local_server}/annotations/{self.name}/{slug}"
+        remote = f"{self.remote_server}/annotations/{self.name}/{slug}"
+        headers = self.__basic_headers__()
+        payload = self.__annotation_payload__(self.creator, box, content, target)
+        payload['id'] = remote 
+        try:
+            response = requests.put(local, json=payload, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to update annotation")
+            return None
+        # if we are doing an --update but there are new annotations
+        if response.status_code == 400:
+            return self.__create_annotation__(slug, box, content, target)
+        else:
+            return payload
+
+
+    def create_annotation(self, slug, box, content, target):
+        if self.update == True:
+            return self.__update_annotation__(slug, box, content, target)
+        else:
+            return self.__create_annotation__(slug, box, content, target)
+
+
+    def __create_manifest__(self, payload):
         url = f"{self.local_server}/manifest/{self.name}"
         headers = self.__basic_headers__()
         try:
@@ -94,12 +122,35 @@ class Miiify:
             self.log.warning("failed to create manifest")
             return None
         if response.status_code != 201:
-            self.log.debug(f"Got a {response.status_code} code when creating manifest")
+            self.log.warning(f"Got a {response.status_code} code when creating manifest")
             return None                 
         else:
             return payload
 
-    def create_container(self):
+
+    def __update_manifest__(self, payload):
+        url = f"{self.local_server}/manifest/{self.name}"
+        headers = self.__basic_headers__()
+        try:
+            response = requests.put(url, json=payload, verify=False, headers=headers)
+        except Exception as e:
+            self.log.warning("failed to update manifest")
+            return None
+        if response.status_code != 200:
+            self.log.warning(f"Got a {response.status_code} code when updating manifest")
+            return None                 
+        else:
+            return payload
+
+
+    def create_manifest(self, payload):
+        if self.update == True:
+            return self.__update_manifest__(payload)
+        else:
+            return self.__create_manifest__(payload)
+
+
+    def __create_container__(self):
         url = f"{self.local_server}/annotations/"
         headers = self.__slug_headers__(self.name)
         label = f"{self.name} by {self.creator}"
@@ -110,10 +161,16 @@ class Miiify:
             self.log.warning("failed to create container")
             return None
         if response.status_code != 201:
-            self.log.debug(f"Got a {response.status_code} code when creating container")
+            self.log.warning(f"Got a {response.status_code} code when creating container")
             return None
         else:          
             return payload
+
+    def create_container(self):
+        if self.update == True:
+            pass
+        else:
+            return self.__create_container__()            
 
     
     def annotation_exists(self, url):

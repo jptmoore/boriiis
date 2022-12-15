@@ -31,9 +31,10 @@ log = logging.getLogger(NAME)
 @click.option("--oem", show_default=True, default=int(config_ini.get("tesseract", "OEM")), help="Tesseract page engine mode.")
 @click.option("--psm", show_default=True, default=int(config_ini.get("tesseract", "PSM")), help="Tesseract segmentation engine mode.")
 @click.option("--preview", is_flag=True, help="Text output of OCR.")
+@click.option("--update", is_flag=True, help="To add to existing data.")
 @click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.version_option(prog_name=NAME, version=config_ini.get("main", "VERSION"))
-def run(name, manifest, lang, creator, oem, psm, page_limit, preview, debug):
+def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, debug):
     if debug: log.setLevel(logging.DEBUG)
     ctx.log = log
     ctx.name = name
@@ -44,6 +45,7 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, debug):
     ctx.psm = psm
     ctx.page_limit = page_limit
     ctx.preview = preview
+    ctx.update = update
     ctx.debug = debug
     ctx.version = config_ini.get("main", "VERSION")
     ctx.local_server = config_ini.get("miiify", "LOCAL_SERVER")
