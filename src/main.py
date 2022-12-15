@@ -8,7 +8,9 @@ from tqdm import tqdm
 
 import logging
 
-logging.basicConfig(format='%(message)s')
+log_format = "%(asctime)s::%(levelname)s::%(name)s::"\
+             "%(filename)s::%(lineno)d::%(message)s"
+logging.basicConfig(level='INFO', format=log_format)
 log = logging.getLogger(__name__)
 
 class Context:
@@ -16,7 +18,6 @@ class Context:
 
 
 ctx = Context()
-ctx.log = log
 config_ini = ConfigParser()
 config_ini.read("config.ini")
 
@@ -30,8 +31,11 @@ config_ini.read("config.ini")
 @click.option("--oem", show_default=True, default=int(config_ini.get("tesseract", "OEM")), help="Tesseract page engine mode.")
 @click.option("--psm", show_default=True, default=int(config_ini.get("tesseract", "PSM")), help="Tesseract segmentation engine mode.")
 @click.option("--preview", is_flag=True, help="Text output of OCR.")
+@click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.version_option(prog_name="boriiis", version=config_ini.get("main", "VERSION"))
-def run(name, manifest, lang, creator, oem, psm, page_limit, preview):
+def run(name, manifest, lang, creator, oem, psm, page_limit, preview, debug):
+    if debug: log.setLevel(logging.DEBUG)
+    ctx.log = log
     ctx.name = name
     ctx.manifest_link = manifest
     ctx.lang = lang
@@ -40,6 +44,7 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview):
     ctx.psm = psm
     ctx.page_limit = page_limit
     ctx.preview = preview
+    ctx.debug = debug
     ctx.version = config_ini.get("main", "VERSION")
     ctx.local_server = config_ini.get("miiify", "LOCAL_SERVER")
     ctx.remote_server = config_ini.get("miiify", "REMOTE_SERVER")
