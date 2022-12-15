@@ -5,7 +5,6 @@ from patch import Patch
 from miiify import Miiify
 from repository import Repository
 from tqdm import tqdm
-
 import logging
 
 class Context:
@@ -35,7 +34,8 @@ log = logging.getLogger(NAME)
 @click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.version_option(prog_name=NAME, version=config_ini.get("main", "VERSION"))
 def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, debug):
-    if debug: log.setLevel(logging.DEBUG)
+    if debug == True:
+        logging.getLogger().setLevel(logging.DEBUG)
     ctx.log = log
     ctx.name = name
     ctx.manifest_link = manifest
@@ -54,7 +54,6 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
     ctx.remote_repo = config_ini.get("miiify", "REMOTE_REPO")
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
-
     with tqdm(desc=NAME, colour='green') as pbar:
         repo = Repository(ctx)
         repo.clone()
