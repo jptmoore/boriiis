@@ -6,6 +6,7 @@ from miiify import Miiify
 from repository import Repository
 from tqdm import tqdm
 import logging
+import sys
 
 class Context:
     pass
@@ -20,6 +21,8 @@ log_format = "%(asctime)s::%(levelname)s::%(name)s::"\
 logging.basicConfig(level='INFO', format=log_format)
 log = logging.getLogger(NAME)
 
+def pp(msg):
+    print(f"\U0001F680 {msg}", file=sys.stderr)
 
 @click.command(name=NAME)
 @click.option("--name", required=True, help="Name of collection.")
@@ -54,18 +57,25 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
     ctx.remote_repo = config_ini.get("miiify", "REMOTE_REPO")
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
-    with tqdm(desc=NAME, colour='green') as pbar:
-        repo = Repository(ctx)
-        repo.clone()
-        miiify = Miiify(ctx)
-        miiify.start()
-        pipeline = Pipeline(ctx, miiify)
+
+    repo = Repository(ctx)
+    pp("cloning repo")
+    repo.clone()
+    miiify = Miiify(ctx)
+    pp("starting Miiify")
+    miiify.start()
+    pipeline = Pipeline(ctx, miiify)
+
+    with tqdm(desc="\U0001F680 processing image", colour='green') as pbar:
         manifest = pipeline.run(pbar)
-        miiify.create_manifest(manifest)
-        patch = Patch(ctx)
-        diff = patch.diff()
-        if preview == False:
-            print(diff)            
+
+    pp("creating manifest")
+    miiify.create_manifest(manifest)
+    patch = Patch(ctx)
+    pp("creating diff")
+    diff = patch.diff()
+    if preview == False:
+        print(diff)
 
 if __name__ == "__main__":
     run()

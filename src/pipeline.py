@@ -2,7 +2,6 @@ from ocr import Ocr
 from alto import Alto
 from manifest import Manifest
 from page import Page
-
 class Pipeline:
     def __init__(self, ctx, miiify):
         self.ocr = Ocr(ctx)
