@@ -21,19 +21,20 @@ Patching the [annotation repository](https://github.com/jptmoore/annotations) pr
 ### Usage
 
 ```
-./boriiis.sh --help
 Usage: main.py [OPTIONS]
 
 Options:
-  --name TEXT      [required]
-  --manifest TEXT  [required]
-  --lang TEXT
-  --creator TEXT
-  --oem INTEGER
-  --psm INTEGER
-  --preview        Output result of OCR only.
-  --version        Show the version and exit.
-  --help           Show this message and exit.
+  --name TEXT           Name of collection.  [required]
+  --manifest TEXT       IIIF manifest.  [required]
+  --lang [eng|fra]      Current languages supported.  [default: eng]
+  --creator TEXT        Creator of annotations.  [default:
+                        john.moore@nationalarchives.gov.uk]
+  --page-limit INTEGER  Server-side annotation pagination.  [default: 200]
+  --oem INTEGER         Tesseract page engine mode.  [default: 3]
+  --psm INTEGER         Tesseract segmentation engine mode.  [default: 3]
+  --preview             Text output of OCR.
+  --version             Show the version and exit.
+  --help                Show this message and exit.
 ```
 
 ### Status

@@ -22,14 +22,14 @@ config_ini.read("config.ini")
 
 
 @click.command(name="boriiis")
-@click.option("--name", required=True)
-@click.option("--manifest", required=True)
-@click.option("--lang", type=click.Choice(['eng', 'fra']), default=config_ini.get("tesseract", "LANG"))
-@click.option("--creator", default=config_ini.get("main", "CREATOR"))
-@click.option("--page-limit", default=int(config_ini.get("miiify", "PAGE_LIMIT")))
-@click.option("--oem", default=int(config_ini.get("tesseract", "OEM")))
-@click.option("--psm", default=int(config_ini.get("tesseract", "PSM")))
-@click.option("--preview", is_flag=True, help="Output result of OCR only.")
+@click.option("--name", required=True, help="Name of collection.")
+@click.option("--manifest", required=True, help="IIIF manifest.")
+@click.option("--lang", type=click.Choice(['eng', 'fra']), show_default=True, default=config_ini.get("tesseract", "LANG"), help="Current languages supported.")
+@click.option("--creator", show_default=True, default=config_ini.get("main", "CREATOR"), help="Creator of annotations.")
+@click.option("--page-limit", show_default=True, default=int(config_ini.get("miiify", "PAGE_LIMIT")), help="Server-side annotation pagination.")
+@click.option("--oem", show_default=True, default=int(config_ini.get("tesseract", "OEM")), help="Tesseract page engine mode.")
+@click.option("--psm", show_default=True, default=int(config_ini.get("tesseract", "PSM")), help="Tesseract segmentation engine mode.")
+@click.option("--preview", is_flag=True, help="Text output of OCR.")
 @click.version_option(prog_name="boriiis", version=config_ini.get("main", "VERSION"))
 def run(name, manifest, lang, creator, oem, psm, page_limit, preview):
     ctx.name = name
