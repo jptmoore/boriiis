@@ -9,7 +9,7 @@ RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools
 
 # tesseract/git
-RUN apk add --update --no-cache tesseract-ocr git
+RUN apk add --update --no-cache tesseract-ocr tesseract-ocr-data-fra git
 
 # boriiis deps
 RUN apk update \
