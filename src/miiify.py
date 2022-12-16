@@ -11,7 +11,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Miiify:
     def __init__(self, ctx):
-        assert(os.path.exists(ctx.local_repo))
         self.name = ctx.name
         self.creator = ctx.creator
         self.version = ctx.version
@@ -207,12 +206,15 @@ class Miiify:
             return response.status_code == 200
 
     def start(self):
-        os.chdir(self.app_dir)
-        subprocess.Popen(
-            [self.app],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.STDOUT,
-        )
+        try:
+            os.chdir(self.app_dir)
+            subprocess.Popen(
+                [self.app],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.STDOUT,
+            )
+        except Exception as e:
+            pp_exit("failed to start Miiify")
         while self.__is_alive__() == False:
             time.sleep(1.0)
         self.create_container()
