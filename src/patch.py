@@ -1,4 +1,5 @@
 from git import Repo
+from pp import pp_exit
 
 class Patch:
     def __init__(self, ctx):
@@ -12,5 +13,4 @@ class Patch:
             content = repo.git.diff("origin/master", "master")
             return content
         except Exception as e:
-            self.log.warning("failed to create diff")
-            return None        
+            pp_exit("failed to create diff")

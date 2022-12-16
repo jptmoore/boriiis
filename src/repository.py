@@ -2,6 +2,7 @@ from git import Repo
 import shutil
 import os
 
+from pp import pp_exit
 
 class Repository:
     def __init__(self, ctx):
@@ -14,8 +15,7 @@ class Repository:
             try:
                 shutil.rmtree(self.local_repo)
             except Exception as e:
-                self.log.warning("failed to remove existing repository")
-                return None
+                pp_exit("failed to remove existing repository")
             else:
                 pass
 
@@ -26,5 +26,4 @@ class Repository:
             assert repo.__class__ is Repo
             return repo
         except Exception as e:
-            self.log.warning("failed to clone repository")
-            return None
+            pp_exit("failed to clone repository")

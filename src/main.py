@@ -6,7 +6,8 @@ from miiify import Miiify
 from repository import Repository
 from tqdm import tqdm
 import logging
-import sys
+
+from pp import pp
 
 class Context:
     pass
@@ -20,9 +21,6 @@ log_format = "%(asctime)s::%(levelname)s::%(name)s::"\
              "%(filename)s::%(lineno)d::%(message)s"
 logging.basicConfig(level='INFO', format=log_format)
 log = logging.getLogger(NAME)
-
-def pp(msg):
-    print(f"\U0001F680 {msg}", file=sys.stderr)
 
 @click.command(name=NAME)
 @click.option("--name", required=True, help="Name of collection.")
@@ -65,10 +63,8 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
     pp("starting Miiify")
     miiify.start()
     pipeline = Pipeline(ctx, miiify)
-
     with tqdm(desc="\U0001F680 processing image", colour='green') as pbar:
         manifest = pipeline.run(pbar)
-
     pp("creating manifest")
     miiify.create_manifest(manifest)
     patch = Patch(ctx)

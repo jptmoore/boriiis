@@ -4,6 +4,8 @@ import subprocess
 import time
 import os
 
+from pp import pp_exit
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -79,11 +81,9 @@ class Miiify:
         try:
             response = requests.post(url, json=payload, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to create annotation")
-            return None
+            pp_exit("failed to create annotation")
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating annotation")
-            return None 
+            pp_exit(f"Got a {response.status_code} code when creating annotation")
         else:
             return payload
 
@@ -97,8 +97,7 @@ class Miiify:
         try:
             response = requests.put(local, json=payload, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to update annotation")
-            return None
+            pp_exit("failed to update annotation")
         # if we are doing an --update but there are new annotations
         if response.status_code == 400:
             return self.__create_annotation__(slug, box, content, target)
@@ -119,11 +118,9 @@ class Miiify:
         try:
             response = requests.post(url, json=payload, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to create manifest")
-            return None
+            pp_exit("failed to create manifest")
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating manifest")
-            return None                 
+            pp_exit(f"Got a {response.status_code} code when creating manifest")
         else:
             return payload
 
@@ -134,11 +131,9 @@ class Miiify:
         try:
             response = requests.put(url, json=payload, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to update manifest")
-            return None
+            pp_exit("failed to update manifest")
         if response.status_code != 200:
-            self.log.warning(f"Got a {response.status_code} code when updating manifest")
-            return None                 
+            pp_exit(f"Got a {response.status_code} code when updating manifest")
         else:
             return payload
 
@@ -158,11 +153,9 @@ class Miiify:
         try:
             response = requests.post(url, json=payload, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to create container")
-            return None
+            pp_exit("failed to create container")
         if response.status_code != 201:
-            self.log.warning(f"Got a {response.status_code} code when creating container")
-            return None
+            pp_exit(f"{self.name} already exists (hint: try --update)")
         else:          
             return payload
 
@@ -178,11 +171,13 @@ class Miiify:
         try:
             response = requests.get(url, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to get annotation")
-            return None
-        else:
+            pp_exit("failed to get annotation")
+        try:
             json = response.json()
-            return response.status_code == 200 and json['items'] != []
+            items = json['items']
+            return response.status_code == 200 and items != []
+        except Exception as e:
+            pp_exit("failed to get annotation items")            
 
 
     def annotation_total(self):
@@ -191,14 +186,14 @@ class Miiify:
         try:
             response = requests.get(url, verify=False, headers=headers)
         except Exception as e:
-            self.log.warning("failed to get annotation")
-            return None
+            pp_exit("failed to get annotation")
         if response.status_code != 200:
-            self.log.warning(f"Got a {response.status_code} code when reading annotation total")
-            return None
-        else:
+            pp_exit(f"Got a {response.status_code} code when reading annotation total")
+        try:
             json = response.json()       
             return json['total']
+        except Exception as e:
+            pp_exit("failed to get annotation total")
 
 
     def __is_alive__(self):

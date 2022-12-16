@@ -1,10 +1,6 @@
 import requests
 from jsonpath_ng import parse
-import sys
-
-def pp_exit(msg):
-    print(f"\n\U0001F4A5 {msg}", file=sys.stderr)
-    sys.exit(1)
+from pp import pp_exit
 
 class Manifest:
     def __init__(self, ctx):
@@ -28,8 +24,7 @@ class Manifest:
             jsonpath_expression = parse("items[*].items[*].items[*].body.id")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
-            self.log.warning("failed to get image links from manifest")
-            return None
+            pp_exit("failed to get image links from manifest")
         else:
             return lis
 
@@ -42,8 +37,7 @@ class Manifest:
             jsonpath_expression = parse("items[*].items[*].items[*].target")
             lis = [match.value for match in jsonpath_expression.find(json)]
         except Exception as e:
-            self.log.warning("failed to get targets from manifest")
-            return None
+            pp_exit("failed to get targets from manifest")
         else:
             return lis
 
@@ -55,7 +49,4 @@ class Manifest:
     def enumerated_data(self, json):
         manifest_image_links = self.__get_image_links__(json)
         manifest_targets = self.__get_targets__(json)
-        if manifest_image_links == None or manifest_targets == None:
-            return []
-        else:
-            return enumerate(zip(manifest_image_links, manifest_targets))
+        return enumerate(zip(manifest_image_links, manifest_targets))

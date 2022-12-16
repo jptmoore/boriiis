@@ -2,11 +2,7 @@ from PIL import Image
 import pytesseract
 import requests
 from io import BytesIO
-import sys
-
-def pp_exit(msg):
-    print(f"\n\U0001F4A5 {msg}", file=sys.stderr)
-    sys.exit(1)
+from pp import pp_exit
 
 class Ocr:
     def __init__(self, ctx):
@@ -28,7 +24,6 @@ class Ocr:
         try:
             content = pytesseract.image_to_alto_xml(Image.open(image), config=self.config)
         except Exception as e:
-            self.log.warning("failed to convert image to alto")
-            return None
+            pp_exit("failed to convert image to alto")
         else:        
             return content

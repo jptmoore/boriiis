@@ -1,5 +1,6 @@
 import xmltodict
 from jsonpath_ng import parse
+from pp import pp_exit
 
 class Alto:
     def __init__(self, ctx, miiify):
@@ -17,8 +18,7 @@ class Alto:
             strings = [match.value for match in jsonpath_expression.find(tb)]
             content = ' '.join(strings)
         except Exception as e:
-            self.log.warning("failed to string content")
-            return None
+            pp_exit("failed to parse string content")
         else:
             return content
 
@@ -28,10 +28,8 @@ class Alto:
             slug = f"image_{index}_{tb['@ID']}"
             box = f"{tb['@HPOS']},{tb['@VPOS']},{tb['@WIDTH']},{tb['@HEIGHT']}"
             content = self.__parse_string__(tb)
-            if content != None:
-                response = self.__annotate__(slug, box, content, target)
-                if response != None:
-                    targets.append(response['target'])
+            response = self.__annotate__(slug, box, content, target)
+            targets.append(response['target'])
         return targets
 
     def __parse_textblock__(self, dict, target, index):
@@ -40,8 +38,7 @@ class Alto:
                 'alto.Layout.Page.PrintSpace.ComposedBlock[*].TextBlock[*]')
             content = [match.value for match in jsonpath_expression.find(dict)]
         except Exception as e:
-            self.log.warning("failed to parse textblock")
-            return []
+            pp_exit("failed to parse textblock")
         else:
             return self.__parse_textblock_worker__(content, target, index)
 
@@ -49,7 +46,6 @@ class Alto:
         try:
             dict = xmltodict.parse(xml)
         except Exception as e:
-            self.log.warning("failed to parse xml")
-            return []
+            pp_exit("failed to parse xml")
         else:
             return self.__parse_textblock__(dict, target, index)
