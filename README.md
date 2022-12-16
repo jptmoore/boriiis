@@ -19,6 +19,7 @@ Patching the [annotation repository](https://github.com/jptmoore/annotations) pr
 ### Usage
 
 ```
+./boriiis.sh --help
 Usage: main.py [OPTIONS]
 
 Options:
@@ -31,6 +32,8 @@ Options:
   --oem INTEGER         Tesseract page engine mode.  [default: 3]
   --psm INTEGER         Tesseract segmentation engine mode.  [default: 3]
   --preview             Text output of OCR.
+  --update              To add to existing data.
+  --debug               Enable debug mode.
   --version             Show the version and exit.
   --help                Show this message and exit.
 ```
