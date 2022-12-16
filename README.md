@@ -29,8 +29,8 @@ Options:
   --creator TEXT        Creator of annotations.  [default:
                         john.moore@nationalarchives.gov.uk]
   --page-limit INTEGER  Server-side annotation pagination.  [default: 200]
-  --oem INTEGER         Tesseract page engine mode.  [default: 3]
-  --psm INTEGER         Tesseract segmentation engine mode.  [default: 3]
+  --oem INTEGER         Tesseract engine mode.  [default: 3]
+  --psm INTEGER         Tesseract page segmentation mode.  [default: 3]
   --preview             Text output of OCR.
   --update              To add to existing data.
   --debug               Enable debug mode.
