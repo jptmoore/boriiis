@@ -63,7 +63,7 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
     pp("starting Miiify")
     miiify.start()
     pipeline = Pipeline(ctx, miiify)
-    with tqdm(desc="\U0001F680 processing image", colour='green') as pbar:
+    with tqdm(desc="\U0001F680 processing image", colour='green', leave=False) as pbar:
         manifest = pipeline.run(pbar)
     pp("creating manifest")
     miiify.create_manifest(manifest)
