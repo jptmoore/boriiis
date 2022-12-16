@@ -2,7 +2,11 @@ from PIL import Image
 import pytesseract
 import requests
 from io import BytesIO
+import sys
 
+def pp_exit(msg):
+    print(f"\n\U0001F4A5 {msg}", file=sys.stderr)
+    sys.exit(1)
 
 class Ocr:
     def __init__(self, ctx):
@@ -12,11 +16,9 @@ class Ocr:
         try:
             response = requests.get(link)
         except Exception as e:
-            self.log.warning("failed to get image for ocr")
-            return None
+            pp_exit("failed to get image for ocr")
         if response.status_code != 200:
-            self.log.warning(f"Got {response.status_code} code trying to access image")
-            return None
+            pp_exit(f"Got {response.status_code} code trying to access image")
         else:
             content = BytesIO(response.content)
             return content

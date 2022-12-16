@@ -1,5 +1,11 @@
 import requests
 from jsonpath_ng import parse
+import sys
+
+def pp_exit(msg):
+    print(f"\n\U0001F4A5 {msg}", file=sys.stderr)
+    sys.exit(1)
+
 class Manifest:
     def __init__(self, ctx):
         self.manifest_link = ctx.manifest_link
@@ -10,11 +16,9 @@ class Manifest:
         try:
             response = requests.get(self.manifest_link)
         except Exception as e:
-            self.log.warning("fail to get manifest")
-            return None
+            pp_exit("fail to get manifest")
         if response.status_code != 200:
-            self.log.warning(f"Got a {response.status_code} code when accessing manifest")
-            return None
+            pp_exit(f"Got a {response.status_code} code when accessing manifest")
         else:
             content = response.json()
             return content
