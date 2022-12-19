@@ -1,6 +1,6 @@
 ### Introduction
 
-OCR from a IIIF manifest to generate a git patch for [Miiify](https://github.com/nationalarchives/miiify).
+OCR from a IIIF v3 manifest to generate a git patch for [Miiify](https://github.com/nationalarchives/miiify).
 
 
 ### Build the tool
