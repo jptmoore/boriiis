@@ -23,5 +23,5 @@ termcolor-whl==1.1.2
 tomli==2.0.1
 tqdm==4.64.1
 typing_extensions==4.4.0
-urllib3==1.26.13
+urllib3==1.26.17
 xmltodict==0.13.0
