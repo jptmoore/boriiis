@@ -35,8 +35,8 @@ class Page:
         pages = self.__generate_pages__()
         for target in targets:
             for page in pages:
-                remote = f"{self.remote_server}/annotations/{self.name}{page}{self.__encode_target__(target)}"
-                local = f"{self.local_server}/annotations/{self.name}{page}{self.__encode_target__(target)}"
+                remote = f"{self.remote_server}/annotations/{self.name}/{page}{self.__encode_target__(target)}"
+                local = f"{self.local_server}/annotations/{self.name}/{page}{self.__encode_target__(target)}"
                 if self.miiify.annotation_exists(local):
                     item = self.__make_annotation_item__(remote)
                     acc.append(item)

@@ -22,15 +22,20 @@ class Miiify:
         self.update = ctx.update
 
     def __annotation_payload__(self, creator, box, content, target):
+        selector = {
+            "type": "FragmentSelector",
+            "conformsTo": "http://www.w3.org/TR/media-frags/",
+            "value": f"xywh={box}",
+        }
         dict = {
             "@context": "http://www.w3.org/ns/anno.jsonld",
             "type": "Annotation",
             "motivation": "commenting",
-            "body": {"type": "TextualBody", "value": content, "format": "text/plain"},
-            "selector": {
-                "type": "FragmentSelector",
-                "conformsTo": "http://www.w3.org/TR/media-frags/",
-                "value": f"xywh={box}",
+            "body": {
+                "type": "TextualBody",
+                "value": content,
+                "format": "text/plain",
+                "selector": selector,
             },
             "target": f"{target}#xywh={box}",
             "creator": {"name": creator},
@@ -43,18 +48,7 @@ class Miiify:
                 "http://www.w3.org/ns/anno.jsonld",
                 "http://www.w3.org/ns/ldp.jsonld",
             ],
-            "type": ["BasicContainer", "AnnotationCollection"],
-            "label": label,
-        }
-        return dict
-
-    def __container_payload__(self, label):
-        dict = {
-            "@context": [
-                "http://www.w3.org/ns/anno.jsonld",
-                "http://www.w3.org/ns/ldp.jsonld",
-            ],
-            "type": ["BasicContainer", "AnnotationCollection"],
+            "type": "AnnotationCollection",
             "label": label,
         }
         return dict
@@ -70,8 +64,10 @@ class Miiify:
 
     def __link_only_headers__(self):
         dict = self.__basic_headers__()
-        dict["Prefer"] = 'return=representation;include="http://www.w3.org/ns/oa#PreferContainedIRIs"'
-        return dict        
+        dict[
+            "Prefer"
+        ] = 'return=representation;include="http://www.w3.org/ns/oa#PreferContainedIRIs"'
+        return dict
 
     def __create_annotation__(self, slug, box, content, target):
         url = f"{self.local_server}/annotations/{self.name}/"
@@ -86,13 +82,12 @@ class Miiify:
         else:
             return payload
 
-
     def __update_annotation__(self, slug, box, content, target):
         local = f"{self.local_server}/annotations/{self.name}/{slug}"
         remote = f"{self.remote_server}/annotations/{self.name}/{slug}"
         headers = self.__basic_headers__()
         payload = self.__annotation_payload__(self.creator, box, content, target)
-        payload['id'] = remote 
+        payload["id"] = remote
         try:
             response = requests.put(local, json=payload, verify=False, headers=headers)
         except Exception as e:
@@ -103,13 +98,11 @@ class Miiify:
         else:
             return payload
 
-
     def create_annotation(self, slug, box, content, target):
         if self.update == True:
             return self.__update_annotation__(slug, box, content, target)
         else:
             return self.__create_annotation__(slug, box, content, target)
-
 
     def __create_manifest__(self, payload):
         url = f"{self.local_server}/manifest/{self.name}"
@@ -123,7 +116,6 @@ class Miiify:
         else:
             return payload
 
-
     def __update_manifest__(self, payload):
         url = f"{self.local_server}/manifest/{self.name}"
         headers = self.__basic_headers__()
@@ -136,13 +128,11 @@ class Miiify:
         else:
             return payload
 
-
     def create_manifest(self, payload):
         if self.update == True:
             return self.__update_manifest__(payload)
         else:
             return self.__create_manifest__(payload)
-
 
     def __create_container__(self):
         url = f"{self.local_server}/annotations/"
@@ -155,16 +145,15 @@ class Miiify:
             pp_exit("failed to create container")
         if response.status_code != 201:
             pp_exit(f"{self.name} already exists (hint: try --update)")
-        else:          
+        else:
             return payload
 
     def create_container(self):
         if self.update == True:
             pass
         else:
-            return self.__create_container__()            
+            return self.__create_container__()
 
-    
     def annotation_exists(self, url):
         headers = self.__link_only_headers__()
         try:
@@ -173,11 +162,10 @@ class Miiify:
             pp_exit("failed to get annotation")
         try:
             json = response.json()
-            items = json['items']
+            items = json["items"]
             return response.status_code == 200 and items != []
         except Exception as e:
-            pp_exit("failed to get annotation items")            
-
+            pp_exit("failed to get annotation items")
 
     def annotation_total(self):
         headers = self.__link_only_headers__()
@@ -189,11 +177,10 @@ class Miiify:
         if response.status_code != 200:
             pp_exit(f"Got a {response.status_code} code when reading annotation total")
         try:
-            json = response.json()       
-            return json['total']
+            json = response.json()
+            return json["total"]
         except Exception as e:
             pp_exit("failed to get annotation total")
-
 
     def __is_alive__(self):
         url = self.local_server
@@ -206,16 +193,15 @@ class Miiify:
             return response.status_code == 200
 
     def start(self):
-        try:
-            os.chdir(self.app_dir)
-            subprocess.Popen(
-                [self.app],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.STDOUT,
-            )
-        except Exception as e:
-            pp_exit("failed to start Miiify")
-        while self.__is_alive__() == False:
-            time.sleep(1.0)
+        # try:
+        #     os.chdir(self.app_dir)
+        #     subprocess.Popen(
+        #         [self.app],
+        #         stdout=subprocess.DEVNULL,
+        #         stderr=subprocess.STDOUT,
+        #     )
+        # except Exception as e:
+        #     pp_exit("failed to start Miiify")
+        # while self.__is_alive__() == False:
+        #     time.sleep(1.0)
         self.create_container()
-

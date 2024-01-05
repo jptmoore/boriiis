@@ -56,9 +56,9 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
     ctx.app = config_ini.get("miiify", "APP")
     ctx.app_dir = config_ini.get("miiify", "APP_DIR")
 
-    repo = Repository(ctx)
-    pp("cloning repo")
-    repo.clone()
+    # repo = Repository(ctx)
+    # pp("cloning repo")
+    # repo.clone()
     miiify = Miiify(ctx)
     pp("starting Miiify")
     miiify.start()
@@ -67,11 +67,11 @@ def run(name, manifest, lang, creator, oem, psm, page_limit, preview, update, de
         manifest = pipeline.run(pbar)
     pp("creating manifest")
     miiify.create_manifest(manifest)
-    patch = Patch(ctx)
-    pp("creating diff")
-    diff = patch.diff()
-    if preview == False:
-        print(diff)
+    # patch = Patch(ctx)
+    # pp("creating diff")
+    # diff = patch.diff()
+    # if preview == False:
+    #     print(diff)
 
 if __name__ == "__main__":
     run()
